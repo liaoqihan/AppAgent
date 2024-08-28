@@ -8,7 +8,7 @@ import time
 
 import prompts
 from config import load_config
-from model import OpenAIModel, QwenModel
+from model import OpenAIModel, QwenModel, QaModel
 from utils import print_with_color
 
 arg_desc = "AppAgent - Human Demonstration"
@@ -29,6 +29,8 @@ if configs["MODEL"] == "OpenAI":
 elif configs["MODEL"] == "Qwen":
     mllm = QwenModel(api_key=configs["DASHSCOPE_API_KEY"],
                      model=configs["QWEN_MODEL"])
+elif configs["MODEL"] == "Qa":
+    mllm = QaModel()
 else:
     print_with_color(f"ERROR: Unsupported model type {configs['MODEL']}!", "red")
     sys.exit()
@@ -46,6 +48,7 @@ xml_dir = os.path.join(task_dir, "xml")
 labeled_ss_dir = os.path.join(task_dir, "labeled_screenshots")
 record_path = os.path.join(task_dir, "record.txt")
 task_desc_path = os.path.join(task_dir, "task_desc.txt")
+time.sleep(5) # 为了调试 另一个脚本能先运行起来
 if not os.path.exists(task_dir) or not os.path.exists(xml_dir) or not os.path.exists(labeled_ss_dir) \
         or not os.path.exists(record_path) or not os.path.exists(task_desc_path):
     sys.exit()

@@ -10,13 +10,14 @@ import time
 import prompts
 from config import load_config
 from and_controller import list_all_devices, AndroidController, traverse_tree
-from model import parse_explore_rsp, parse_grid_rsp, OpenAIModel, QwenModel
+from model import parse_explore_rsp, parse_grid_rsp, OpenAIModel, QwenModel, QaModel
 from utils import print_with_color, draw_bbox_multi, draw_grid
 
 arg_desc = "AppAgent Executor"
 parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description=arg_desc)
 parser.add_argument("--app")
 parser.add_argument("--root_dir", default="./")
+parser.add_argument("--task_desc")
 args = vars(parser.parse_args())
 
 configs = load_config()
@@ -30,6 +31,8 @@ if configs["MODEL"] == "OpenAI":
 elif configs["MODEL"] == "Qwen":
     mllm = QwenModel(api_key=configs["DASHSCOPE_API_KEY"],
                      model=configs["QWEN_MODEL"])
+elif configs["MODEL"] == "Qa":
+    mllm = QaModel()
 else:
     print_with_color(f"ERROR: Unsupported model type {configs['MODEL']}!", "red")
     sys.exit()
@@ -52,8 +55,8 @@ task_timestamp = int(time.time())
 dir_name = datetime.datetime.fromtimestamp(task_timestamp).strftime(f"task_{app}_%Y-%m-%d_%H-%M-%S")
 task_dir = os.path.join(work_dir, dir_name)
 os.mkdir(task_dir)
-log_path = os.path.join(task_dir, f"log_{app}_{dir_name}.txt")
-
+log_path = os.path.join(task_dir, f"log_{app}_{dir_name}.json")
+print_with_color(f"此次任务日志文件在：{log_path}","green")
 no_doc = False
 if not os.path.exists(auto_docs_dir) and not os.path.exists(demo_docs_dir):
     print_with_color(f"No documentations found for the app {app}. Do you want to proceed with no docs? Enter y or n",
@@ -105,8 +108,7 @@ if not width and not height:
 print_with_color(f"Screen resolution of {device}: {width}x{height}", "yellow")
 
 print_with_color("Please enter the description of the task you want me to complete in a few sentences:", "blue")
-task_desc = input()
-
+task_desc = args["task_desc"] or input()
 round_count = 0
 last_act = "None"
 task_complete = False
@@ -205,7 +207,6 @@ while round_count < configs["MAX_ROUNDS"]:
     prompt = re.sub(r"<last_act>", last_act, prompt)
     print_with_color("Thinking about what to do in the next step...", "yellow")
     status, rsp = mllm.get_model_response(prompt, [image])
-
     if status:
         with open(log_path, "a") as logfile:
             log_item = {"step": round_count, "prompt": prompt, "image": f"{dir_name}_{round_count}_labeled.png",

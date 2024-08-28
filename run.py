@@ -18,8 +18,9 @@ print_with_color("Welcome to the deployment phase of AppAgent!\nBefore giving me
                  "of the app on your phone and provide the following information.", "yellow")
 
 if not app:
-    print_with_color("What is the name of the target app?", "blue")
-    app = input()
+    # print_with_color("What is the name of the target app?", "blue")
+    # app = input()
+    app = "Alibaba.com"
     app = app.replace(" ", "")
 
 os.system(f"python scripts/task_executor.py --app {app} --root_dir {root_dir}")

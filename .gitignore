@@ -1,0 +1,3 @@
+tasks/
+apps/
+scripts/__pycache__/*.pyc

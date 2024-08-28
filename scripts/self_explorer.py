@@ -10,13 +10,14 @@ import time
 import prompts
 from config import load_config
 from and_controller import list_all_devices, AndroidController, traverse_tree
-from model import parse_explore_rsp, parse_reflect_rsp, OpenAIModel, QwenModel
+from model import parse_explore_rsp, parse_reflect_rsp, OpenAIModel, QwenModel, QaModel
 from utils import print_with_color, draw_bbox_multi
 
 arg_desc = "AppAgent - Autonomous Exploration"
 parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description=arg_desc)
 parser.add_argument("--app")
 parser.add_argument("--root_dir", default="./")
+parser.add_argument("--task_desc")
 args = vars(parser.parse_args())
 
 configs = load_config()
@@ -30,6 +31,8 @@ if configs["MODEL"] == "OpenAI":
 elif configs["MODEL"] == "Qwen":
     mllm = QwenModel(api_key=configs["DASHSCOPE_API_KEY"],
                      model=configs["QWEN_MODEL"])
+elif configs["MODEL"] == "Qa":
+    mllm = QaModel()
 else:
     print_with_color(f"ERROR: Unsupported model type {configs['MODEL']}!", "red")
     sys.exit()
@@ -80,7 +83,7 @@ if not width and not height:
 print_with_color(f"Screen resolution of {device}: {width}x{height}", "yellow")
 
 print_with_color("Please enter the description of the task you want me to complete in a few sentences:", "blue")
-task_desc = input()
+task_desc = args["task_desc"] or input()
 
 round_count = 0
 doc_count = 0
@@ -93,6 +96,7 @@ while round_count < configs["MAX_ROUNDS"]:
     screenshot_before = controller.get_screenshot(f"{round_count}_before", task_dir)
     xml_path = controller.get_xml(f"{round_count}", task_dir)
     if screenshot_before == "ERROR" or xml_path == "ERROR":
+        print_with_color('screenshot_before == "ERROR" or xml_path == "ERROR"',"red")
         break
     clickable_list = []
     focusable_list = []
@@ -119,14 +123,13 @@ while round_count < configs["MAX_ROUNDS"]:
         if not close:
             elem_list.append(elem)
     draw_bbox_multi(screenshot_before, os.path.join(task_dir, f"{round_count}_before_labeled.png"), elem_list,
-                    dark_mode=configs["DARK_MODE"])
+                    dark_mode=configs[" "])
 
     prompt = re.sub(r"<task_description>", task_desc, prompts.self_explore_task_template)
     prompt = re.sub(r"<last_act>", last_act, prompt)
     base64_img_before = os.path.join(task_dir, f"{round_count}_before_labeled.png")
     print_with_color("Thinking about what to do in the next step...", "yellow")
     status, rsp = mllm.get_model_response(prompt, [base64_img_before])
-
     if status:
         with open(explore_log_path, "a") as logfile:
             log_item = {"step": round_count, "prompt": prompt, "image": f"{round_count}_before_labeled.png",
@@ -141,6 +144,9 @@ while round_count < configs["MAX_ROUNDS"]:
             break
         if act_name == "tap":
             _, area = res
+            if area - 1 >= len(elem_list):
+                print_with_color(f"area - 1 >= len(elem_list) area:{area} len(elem_list):{len(elem_list)}", "red")
+                break
             tl, br = elem_list[area - 1].bbox
             x, y = (tl[0] + br[0]) // 2, (tl[1] + br[1]) // 2
             ret = controller.tap(x, y)
@@ -171,6 +177,7 @@ while round_count < configs["MAX_ROUNDS"]:
                 break
         else:
             break
+        print_with_color(f"act_name:{act_name} res:{res} 执行完成", "green")
         time.sleep(configs["REQUEST_INTERVAL"])
     else:
         print_with_color(rsp, "red")

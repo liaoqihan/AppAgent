@@ -41,11 +41,11 @@ because the function of a UI element can be flexible. In this case, your generat
 Old documentation of this UI element: <old_doc>"""
 
 task_template = """You are an agent that is trained to perform some basic tasks on a smartphone. You will be given a 
-smartphone screenshot. The interactive UI elements on the screenshot are labeled with numeric tags starting from 1. The 
+smartphone screenshot. The interactive UI elements on the screenshot are labeled with numeric tags (red or blue) starting from 1. The 
 numeric tag of each interactive element is located in the center of the element.
 
 You can call the following functions to control the smartphone:
-
+(first of all: You must call grid() function when you find the element you want to interact with is not labeled with a numeric tag and other elements with numeric tags cannot help with the task)
 1. tap(element: int)
 This function is used to tap an UI element shown on the smartphone screen.
 "element" is a numeric tag assigned to an UI element shown on the smartphone screen.
@@ -75,14 +75,14 @@ medium distance.
 You should call this function when you find the element you want to interact with is not labeled with a numeric tag and 
 other elements with numeric tags cannot help with the task. The function will bring up a grid overlay to divide the 
 smartphone screen into small areas and this will give you more freedom to choose any part of the screen to tap, long 
-press, or swipe.
+press, or swipe.(Note that when there is no desired element on the screen, you must use the grid method. Never perform an action like tap(2) when the only labeled element is 1, as this will cause the system to crash.If you are not absolutely sure that the element you want to interact with has been labeled, it is advisable to use the grid method.)
 <ui_document>
 The task you need to complete is to <task_description>. Your past actions to proceed with this task are summarized as 
 follows: <last_act>
 Now, given the documentation and the following labeled screenshot, you need to think and call the function needed to 
-proceed with the task. Your output should include three parts in the given format:
+proceed with the task. Your output must include three parts in the given format (You must strictly follow this format and do not add any extraneous characters, such as ###Observation and similar cases.):
 Observation: <Describe what you observe in the image>
-Thought: <To complete the given task, what is the next step I should do>
+Thought: <To complete the given task, what is the next step I should do. and explain why dont you use grid() function >
 Action: <The function call with the correct parameters to proceed with the task. If you believe the task is completed or 
 there is nothing to be done, you should output FINISH. You cannot output anything else except a function call or FINISH 
 in this field.>

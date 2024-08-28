@@ -16,6 +16,7 @@ parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpForm
 parser.add_argument("--app")
 parser.add_argument("--demo")
 parser.add_argument("--root_dir", default="./")
+parser.add_argument("--task_desc")
 args = vars(parser.parse_args())
 
 app = args["app"]
@@ -74,7 +75,7 @@ if not width and not height:
 print_with_color(f"Screen resolution of {device}: {width}x{height}", "yellow")
 
 print_with_color("Please state the goal of your following demo actions clearly, e.g. send a message to John", "blue")
-task_desc = input()
+task_desc = args["task_desc"] or input() 
 with open(task_desc_path, "w") as f:
     f.write(task_desc)
 
@@ -163,7 +164,7 @@ while True:
             user_input = input()
         swipe_dir = user_input
         print_with_color(f"Which element do you want to swipe? Choose a numeric tag from 1 to {len(elem_list)}:")
-        while not user_input.isnumeric() or int(user_input) > len(elem_list) or int(user_input) < 1:
+        while not user_input.isnumeric(): #or int(user_input) > len(elem_list) or int(user_input) < 1:
             user_input = input()
         tl, br = elem_list[int(user_input) - 1].bbox
         x, y = (tl[0] + br[0]) // 2, (tl[1] + br[1]) // 2
