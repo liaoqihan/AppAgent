@@ -72,7 +72,7 @@ A simple use case can be swipe(21, "up", "medium"), which swipes up the UI eleme
 medium distance.
 
 5. grid()
-You should call this function when you find the element you want to interact with is not labeled with a numeric tag and 
+You must call this function when you find the element you want to interact with is not labeled with a numeric tag and 
 other elements with numeric tags cannot help with the task. The function will bring up a grid overlay to divide the 
 smartphone screen into small areas and this will give you more freedom to choose any part of the screen to tap, long 
 press, or swipe.(Note that when there is no desired element on the screen, you must use the grid method. Never perform an action like tap(2) when the only labeled element is 1, as this will cause the system to crash.If you are not absolutely sure that the element you want to interact with has been labeled, it is advisable to use the grid method.)

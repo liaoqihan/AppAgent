@@ -1,3 +1,4 @@
 tasks/
 apps/
 scripts/__pycache__/*.pyc
+.vscode/launch.json

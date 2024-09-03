@@ -7,9 +7,11 @@ arg_desc = "AppAgent - deployment phase"
 parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description=arg_desc)
 parser.add_argument("--app")
 parser.add_argument("--root_dir", default="./")
+parser.add_argument("--ak", default="")
 args = vars(parser.parse_args())
 
 app = args["app"]
+ak = args["ak"]
 root_dir = args["root_dir"]
 
 print_with_color("Welcome to the deployment phase of AppAgent!\nBefore giving me the task, you should first tell me "
@@ -23,4 +25,4 @@ if not app:
     app = "Alibaba.com"
     app = app.replace(" ", "")
 
-os.system(f"python scripts/task_executor.py --app {app} --root_dir {root_dir}")
+os.system(f"python scripts/task_executor.py --app {app} --root_dir {root_dir} --ak {ak}")

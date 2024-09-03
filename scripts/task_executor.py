@@ -18,6 +18,7 @@ parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpForm
 parser.add_argument("--app")
 parser.add_argument("--root_dir", default="./")
 parser.add_argument("--task_desc")
+parser.add_argument("--ak")
 args = vars(parser.parse_args())
 
 configs = load_config()
@@ -38,6 +39,7 @@ else:
     sys.exit()
 
 app = args["app"]
+ak = args["ak"]
 root_dir = args["root_dir"]
 
 if not app:

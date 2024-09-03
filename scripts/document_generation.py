@@ -15,11 +15,12 @@ arg_desc = "AppAgent - Human Demonstration"
 parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description=arg_desc)
 parser.add_argument("--app", required=True)
 parser.add_argument("--demo", required=True)
+parser.add_argument("--ak", required=True)
 parser.add_argument("--root_dir", default="./")
 args = vars(parser.parse_args())
 
 configs = load_config()
-
+ak = args["ak"]
 if configs["MODEL"] == "OpenAI":
     mllm = OpenAIModel(base_url=configs["OPENAI_API_BASE"],
                        api_key=configs["OPENAI_API_KEY"],
@@ -30,7 +31,7 @@ elif configs["MODEL"] == "Qwen":
     mllm = QwenModel(api_key=configs["DASHSCOPE_API_KEY"],
                      model=configs["QWEN_MODEL"])
 elif configs["MODEL"] == "Qa":
-    mllm = QaModel()
+    mllm = QaModel(ak=ak)
 else:
     print_with_color(f"ERROR: Unsupported model type {configs['MODEL']}!", "red")
     sys.exit()

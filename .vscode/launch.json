@@ -9,7 +9,7 @@
             "console": "integratedTerminal",
             "args": [
                 "--app",
-                "Alibaba_test",
+                "Alibaba_test1",
                 "--root_dir",
                 "${workspaceFolder}",
                 "--task_desc",
@@ -17,7 +17,8 @@
                 // "测试搜索土耳其云主题（先搜索hat 然后下滑到大致第十一个商品卡片 会有土耳其云主题 点击后进入土耳其场馆 然后随机选择一个品下单购买）"
                 // "Test searching for the Turkish Cloud theme (on the search results page for hat, approximately at the position of the eleventh product card, there will be the Turkish Cloud theme. Click to enter the Turkish Pavilion, then randomly select a product to place an order and purchase.)"
                 // "'1.先去搜索hat 使app出现hat搜索结果页（搜索结果页会有商品图片） 2.然后在hat搜索结果页中找到土耳其场馆（大致在第十一个商品卡片的位置） 进入场馆 3.在场馆内随机选择一个商品完成下单'"
-                "进入首页的‘Top ranking’会场 随机点击一个商品并完成下单"
+                // "'进入首页的‘Top ranking’会场  随机点击一个商品并完成下单'"
+                "打开首页点击浏览历史"
                 
             ]
         },
@@ -29,7 +30,7 @@
             "console": "integratedTerminal",
             "args": [
                 "--app",
-                "Alibaba_test",
+                "Alibaba_test1",
                 "--root_dir",
                 "${workspaceFolder}",
                 "--task_desc",
@@ -44,7 +45,7 @@
             "console": "integratedTerminal",
             "args": [
                 "--app",
-                "Alibaba_test",
+                "Alibaba_test1",
                 "--demo",
                 "demo_name_3",
                 "--root_dir",
@@ -65,7 +66,7 @@
             "console": "integratedTerminal",
             "args": [
                 "--app",
-                "Alibaba_test",
+                "Alibaba_test1",
                 "--demo",
                 "demo_name_3",
                 "--root_dir",
